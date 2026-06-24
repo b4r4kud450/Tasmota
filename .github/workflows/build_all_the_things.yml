@@ -57,7 +57,7 @@ jobs:
       fail-fast: true
       matrix:
         variant:
-          - tasmota32solo1-safeboot
+          - tasmota32s3-webcam
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
