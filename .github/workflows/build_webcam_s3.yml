@@ -1,0 +1,48 @@
+name: Build ESP32-S3 WebCam
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-s3-webcam:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.13'
+          
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          version: "latest"
+          enable-cache: false
+          
+      - name: Install dependencies
+        run: |
+          uv pip install --system pioarduino
+          
+      - name: Create user_config_override.h
+        run: |
+          cat > tasmota/user_config_override.h << 'EOF'
+          #ifndef _USER_CONFIG_OVERRIDE_H_
+          #define _USER_CONFIG_OVERRIDE_H_
+          #define USE_WEBCAM
+          #define USE_PSRAM
+          #define USE_UFILESYS
+          #define GUI_TRASH_FILE
+          #endif
+          EOF
+          
+      - name: Build tasmota32s3-webcam
+        env:
+          PYTHONIOENCODING: utf-8
+          PYTHONUTF8: '1'
+        run: platformio run -e tasmota32s3-webcam
+          
+      - uses: actions/upload-artifact@v7
+        with:
+          name: tasmota32s3-webcam
+          path: ./build_output/firmware/tasmota32s3-webcam.bin
