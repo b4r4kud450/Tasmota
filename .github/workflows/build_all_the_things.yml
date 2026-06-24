@@ -25,7 +25,7 @@ jobs:
       fail-fast: true
       matrix:
         variant:
-          - tasmota32-webcam
+          - tasmota32s3-webcam
     steps:
       - uses: actions/checkout@v6
       - name: Set up Python
@@ -107,7 +107,7 @@ jobs:
           - tasmota32p4
           - tasmota32s2
           - tasmota32s2cdc
-          - tasmota32s3
+          - tasmota32s3-webcam
           - tasmota32-zbbrdgpro
           - tasmota-zigbee
           - tasmota32-bluetooth
