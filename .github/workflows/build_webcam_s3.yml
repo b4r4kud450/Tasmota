@@ -1,4 +1,4 @@
-name: Build ESP32-S3 WebCam
+name: Build ESP32-S3 WebCam OV3660
 
 on:
   workflow_dispatch:
@@ -7,42 +7,64 @@ jobs:
   build-s3-webcam:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      
+      - uses: actions/checkout@v4
+
       - name: Set up Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-          
-      - name: Install uv
-        uses: astral-sh/setup-uv@v7
-        with:
-          version: "latest"
-          enable-cache: false
-          
-      - name: Install dependencies
+
+      - name: Install PlatformIO (pioarduino)
         run: |
-          uv pip install --system pioarduino
-          
-      - name: Create user_config_override.h
+          pip install pioarduino
+
+      - name: Patch camera_pins.h for Freenove ESP32-S3 + OV3660
         run: |
-          cat > tasmota/user_config_override.h << 'EOF'
-          #ifndef _USER_CONFIG_OVERRIDE_H_
-          #define _USER_CONFIG_OVERRIDE_H_
-          #define USE_WEBCAM
-          #define USE_PSRAM
-          #define USE_UFILESYS
-          #define GUI_TRASH_FILE
-          #endif
-          EOF
-          
-      - name: Build tasmota32s3-webcam
+          PINS_FILE="lib/default/headers/camera_pins.h"
+          if grep -q "CAMERA_MODEL_FREENOVE_ESP32S3" "$PINS_FILE"; then
+            echo "Patch already applied"
+          else
+            # Insert before the final #else
+            python3 - "$PINS_FILE" << 'PYEOF'
+          import sys
+          filepath = sys.argv[1]
+          patch = """
+          #elif defined(CAMERA_MODEL_FREENOVE_ESP32S3)
+          // Freenove ESP32-S3 WROOM - OV3660 pinout
+          #define PWDN_GPIO_NUM  -1
+          #define RESET_GPIO_NUM -1
+          #define XCLK_GPIO_NUM  15
+          #define SIOD_GPIO_NUM  4
+          #define SIOC_GPIO_NUM  5
+          #define Y2_GPIO_NUM    11
+          #define Y3_GPIO_NUM    9
+          #define Y4_GPIO_NUM    8
+          #define Y5_GPIO_NUM    10
+          #define Y6_GPIO_NUM    12
+          #define Y7_GPIO_NUM    18
+          #define Y8_GPIO_NUM    17
+          #define Y9_GPIO_NUM    16
+          #define VSYNC_GPIO_NUM 6
+          #define HREF_GPIO_NUM  7
+          #define PCLK_GPIO_NUM  13
+          """
+          with open(filepath, 'r') as f:
+              content = f.read()
+          idx = content.rfind('\n#else\n')
+          new = content[:idx] + '\n' + patch + content[idx:]
+          with open(filepath, 'w') as f:
+              f.write(new)
+          print("Patch applied!")
+          PYEOF
+          fi
+
+      - name: Build tasmota32s3-webcam-ov3660
         env:
           PYTHONIOENCODING: utf-8
           PYTHONUTF8: '1'
-        run: platformio run -e tasmota32s3-webcam
-          
-      - uses: actions/upload-artifact@v7
+        run: platformio run -e tasmota32s3-webcam-ov3660
+
+      - uses: actions/upload-artifact@v4
         with:
-          name: tasmota32s3-webcam
-          path: ./build_output/firmware/tasmota32s3-webcam.bin
+          name: tasmota32s3-webcam-ov3660
+          path: ./build_output/firmware/tasmota32s3-webcam-ov3660.bin
