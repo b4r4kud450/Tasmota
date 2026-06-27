@@ -9,7 +9,7 @@
 // -- Webcam налаштування --------------------------
 #undef  USE_WEBCAM
 #define USE_WEBCAM                         // Увімкнути підтримку вебкамери
-#define USE_WEBCAM_V2                      // Використати новий драйвер V2 (кращий для ESP32-S3)
+//#define USE_WEBCAM_V2                      // Використати новий драйвер V2 (кращий для ESP32-S3)
 
 // -- Ініціалізація камери при старті --------------
 // Команда яка виконається при завантаженні:
@@ -24,7 +24,7 @@
 
 // -- Hostname
 #undef  WIFI_HOSTNAME
-#define WIFI_HOSTNAME "freenove-cam"
+#define WIFI_DEFAULT_HOSTNAME "freenove-cam"
 
 // -- MQTT (за бажанням)
 //#undef  MQTT_HOST
