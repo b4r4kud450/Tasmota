@@ -1,0 +1,27 @@
+{
+  "build": {
+    "arduino":{
+      "memory_type": "qio_opi"
+    },
+    "core": "esp32",
+    "extra_flags": "-DARDUINO_TASMOTA -DBOARD_HAS_PSRAM -DARDUINO_USB_MODE=1 -DUSE_USB_CDC_CONSOLE -DESP32S3",
+    "f_cpu": "240000000L",
+    "f_flash": "80000000L",
+    "flash_mode": "qio",
+    "mcu": "esp32s3",
+    "variant": "esp32s3",
+    "partitions": "partitions/esp32_partition_app3904k_fs11584k.csv"
+  },
+  "connectivity": ["wifi", "bluetooth"],
+  "frameworks": ["arduino", "espidf"],
+  "name": "Freenove ESP32-S3 N16R8 - 16MB Flash QIO, 8MB OPI PSRAM",
+  "upload": {
+    "flash_size": "16MB",
+    "maximum_ram_size": 327680,
+    "maximum_size": 16777216,
+    "require_upload_port": true,
+    "speed": 2000000
+  },
+  "url": "https://store.freenove.com/products/fnk0085",
+  "vendor": "Freenove"
+}
