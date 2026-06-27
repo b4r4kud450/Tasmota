@@ -15,48 +15,11 @@ jobs:
           python-version: '3.13'
 
       - name: Install PlatformIO (pioarduino)
-        run: |
-          pip install pioarduino
+        run: pip install pioarduino
 
-      - name: Patch camera_pins.h for Freenove ESP32-S3 + OV3660
+      - name: Patch camera_pins.h for OV3660
         run: |
-          PINS_FILE="lib/default/headers/camera_pins.h"
-          if grep -q "CAMERA_MODEL_FREENOVE_ESP32S3" "$PINS_FILE"; then
-            echo "Patch already applied"
-          else
-            # Insert before the final #else
-            python3 - "$PINS_FILE" << 'PYEOF'
-          import sys
-          filepath = sys.argv[1]
-          patch = """
-          #elif defined(CAMERA_MODEL_FREENOVE_ESP32S3)
-          // Freenove ESP32-S3 WROOM - OV3660 pinout
-          #define PWDN_GPIO_NUM  -1
-          #define RESET_GPIO_NUM -1
-          #define XCLK_GPIO_NUM  15
-          #define SIOD_GPIO_NUM  4
-          #define SIOC_GPIO_NUM  5
-          #define Y2_GPIO_NUM    11
-          #define Y3_GPIO_NUM    9
-          #define Y4_GPIO_NUM    8
-          #define Y5_GPIO_NUM    10
-          #define Y6_GPIO_NUM    12
-          #define Y7_GPIO_NUM    18
-          #define Y8_GPIO_NUM    17
-          #define Y9_GPIO_NUM    16
-          #define VSYNC_GPIO_NUM 6
-          #define HREF_GPIO_NUM  7
-          #define PCLK_GPIO_NUM  13
-          """
-          with open(filepath, 'r') as f:
-              content = f.read()
-          idx = content.rfind('\n#else\n')
-          new = content[:idx] + '\n' + patch + content[idx:]
-          with open(filepath, 'w') as f:
-              f.write(new)
-          print("Patch applied!")
-          PYEOF
-          fi
+          python3 tools/patch_camera_pins.py lib/default/headers/camera_pins.h
 
       - name: Build tasmota32s3-webcam-ov3660
         env:
