@@ -1,12 +1,16 @@
 /*
-  user_config_override.h - Freenove ESP32-S3 WROOM + OV3660
+  user_config_override.h - Freenove ESP32-S3 WROOM N16R8 + OV3660
   Скопіюйте в папку tasmota/
 */
 
 #ifndef _USER_CONFIG_OVERRIDE_H_
 #define _USER_CONFIG_OVERRIDE_H_
 
-// --- Freenove ESP32-S3 WROOM піни для OV3660 ------
+// ============================================
+// Freenove ESP32-S3 WROOM піни для OV3660
+// ============================================
+// КРИТИЧНО: Ці дефайни використовуються як fallback,
+// якщо піни не налаштовані через Template/GPIO
 #define PWDN_GPIO_NUM     -1
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     15
@@ -24,7 +28,15 @@
 #define HREF_GPIO_NUM     45
 #define PCLK_GPIO_NUM     16
 
-// --- Hostname ---
+// ============================================
+// Hostname
+// ============================================
 #define WIFI_DEFAULT_HOSTNAME "freenove-cam"
+
+// ============================================
+// Додаткові налаштування
+// ============================================
+// Збільшити WiFi таймаут для стабільності
+#define WIFI_CONFIG_TOOL       WIFI_MANAGER
 
 #endif
