@@ -22,8 +22,15 @@ jobs:
       - name: Copy firmware
         run: |
           mkdir -p build_output
-          cp .pio/build/tasmota32s3-webcam-ov3660/firmware.bin build_output/tasmota32s3-webcam-ov3660.bin
+          # Для ESP32-S3 PlatformIO створює merged firmware тут:
+          cp .pio/build/tasmota32s3-webcam-ov3660/tasmota32s3-webcam-ov3660.bin build_output/ ||           cp .pio/build/tasmota32s3-webcam-ov3660/firmware.bin build_output/tasmota32s3-webcam-ov3660.bin
+      - name: List build files
+        run: |
+          echo "=== Files in build dir ==="
+          ls -la .pio/build/tasmota32s3-webcam-ov3660/
+          echo "=== Files in build_output ==="
+          ls -la build_output/
       - uses: actions/upload-artifact@v4
         with:
           name: tasmota32s3-webcam-ov3660
-          path: build_output/tasmota32s3-webcam-ov3660.bin
+          path: build_output/*.bin
