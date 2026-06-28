@@ -8,26 +8,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
-      - name: Install PlatformIO (pioarduino)
+      - name: Install PlatformIO
         run: pip install pioarduino
-
-      - name: Patch camera_pins.h for OV3660
-        run: |
-          python3 tools/patch_camera_pins.py lib/default/headers/camera_pins.h
-
-      - name: Build tasmota32s3-webcam-ov3660
+      - name: Build
         env:
           PYTHONIOENCODING: utf-8
           PYTHONUTF8: '1'
-        run: platformio run -e tasmota32s3-webcam-ov3660
-
+        run: pio run -e tasmota32s3-webcam-ov3660
+      - name: Copy firmware
+        run: |
+          mkdir -p build_output
+          cp .pio/build/tasmota32s3-webcam-ov3660/firmware.bin build_output/tasmota32s3-webcam-ov3660.bin
       - uses: actions/upload-artifact@v4
         with:
           name: tasmota32s3-webcam-ov3660
-          path: ./build_output/firmware/tasmota32s3-webcam-ov3660.bin
+          path: build_output/tasmota32s3-webcam-ov3660.bin
