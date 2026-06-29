@@ -22,30 +22,17 @@ jobs:
       - name: Find and copy firmware
         run: |
           mkdir -p build_output
-
-          # Для ESP32-S3 PlatformIO створює кілька файлів.
-          # Нам потрібен factory.bin або merged bin — це ПОВНА прошивка.
-          # firmware.bin — це safeboot (мінімальний завантажувач).
-
           BUILD_DIR=".pio/build/tasmota32s3-webcam-ov3660"
 
           echo "=== Files in build directory ==="
           ls -la $BUILD_DIR/
 
-          # Пріоритет 1: firmware-factory.bin (повна прошивка з partition table)
+          # Копіюємо firmware-factory.bin (повна прошивка з partition table)
           if [ -f "$BUILD_DIR/firmware-factory.bin" ]; then
             cp "$BUILD_DIR/firmware-factory.bin" build_output/tasmota32s3-webcam-ov3660.bin
-            echo "Copied firmware-factory.bin (FULL firmware)"
-
-          # Пріоритет 2: merged bin (якщо PlatformIO створив)
-          elif [ -f "$BUILD_DIR/tasmota32s3-webcam-ov3660.bin" ]; then
-            cp "$BUILD_DIR/tasmota32s3-webcam-ov3660.bin" build_output/
-            echo "Copied merged firmware"
-
-          # Пріоритет 3: НЕ використовувати firmware.bin — це safeboot!
+            echo "✅ Copied firmware-factory.bin (FULL firmware)"
           else
-            echo "ERROR: Full firmware not found!"
-            echo "firmware.bin is SAFEBOOT only — DO NOT FLASH IT"
+            echo "❌ ERROR: firmware-factory.bin not found!"
             exit 1
           fi
 
