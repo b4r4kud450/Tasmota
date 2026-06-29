@@ -387,47 +387,47 @@ struct PICSTORE {
 
 #ifdef ENABLE_RTSPSERVER
 
-#include <OV2640.h>
+//#include <OV2640.h>  // OV3660: removed, using generic esp_camera API
 #include <SimStreamer.h>
-#include <OV2640Streamer.h>
+//#include <OV2640Streamer.h>  // OV3660: removed
 #include <CRtspSession.h>
 #ifndef RTSP_FRAME_TIME
 #define RTSP_FRAME_TIME 100
 #endif // RTSP_FRAME_TIME
 
 // RTSP streamer class
-class localOV2640Streamer : public CStreamer {
+class localCameraStreamer : public CStreamer {
     BufPtr f_ptr; // temp pointer to frame buffer
     int f_len;
 public:
-    localOV2640Streamer(SOCKET aClient, int width, int height);
+    localCameraStreamer(SOCKET aClient, int width, int height);
     void setframe(BufPtr ptr, int len);
     void clearframe();
     virtual void    streamImage(uint32_t curMsec);
 };
 
-localOV2640Streamer::localOV2640Streamer(SOCKET aClient, int width, int height) : CStreamer(aClient, width, height) {
+localCameraStreamer::localCameraStreamer(SOCKET aClient, int width, int height) : CStreamer(aClient, width, height) {
   clearframe();
 #ifdef WEBCAM_DEV_DEBUG  
   AddLog(LOG_LEVEL_DEBUG,PSTR("CAM:RTSP w%d h%d"), width, height);
 #endif
 }
-void localOV2640Streamer::setframe(BufPtr ptr, int len) {
+void localCameraStreamer::setframe(BufPtr ptr, int len) {
   f_ptr = ptr;
   f_len = len;
 }
-void localOV2640Streamer::clearframe() {
+void localCameraStreamer::clearframe() {
   f_ptr = nullptr;
   f_len = 0;
 }
-void localOV2640Streamer::streamImage(uint32_t curMsec){
+void localCameraStreamer::streamImage(uint32_t curMsec){
   if (!f_ptr) return;
   streamFrame(f_ptr, f_len, curMsec);
   //AddLog(LOG_LEVEL_DEBUG,PSTR("CAM: RTSP Stream Frame %d"), f_len);
 }
 
 typedef struct tag_wc_rtspclient {
-  localOV2640Streamer * volatile camStreamer;
+  localCameraStreamer * volatile camStreamer;
   CRtspSession * volatile rtsp_session;
   WiFiClient rtsp_client;
   tag_wc_rtspclient * volatile p_next;
@@ -2225,7 +2225,7 @@ void WcLoop(void) {
         wc_rtspclient *client = new wc_rtspclient;
         client->p_next = Wc.rtspclient;
         client->rtsp_client = rtsp_client;
-        client->camStreamer = new localOV2640Streamer(&client->rtsp_client, Wc.width, Wc.height);
+        client->camStreamer = new localCameraStreamer(&client->rtsp_client, Wc.width, Wc.height);
         client->rtsp_session = new CRtspSession(&client->rtsp_client, client->camStreamer); // our threads RTSP session and state
         AddLog(LOG_LEVEL_INFO, PSTR("CAM: RTSP str"));
         Wc.rtspclient = client;
