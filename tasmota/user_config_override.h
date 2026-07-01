@@ -6,7 +6,9 @@
 #ifndef _USER_CONFIG_OVERRIDE_H_
 #define _USER_CONFIG_OVERRIDE_H_
 
+// ============================================
 // Freenove ESP32-S3 WROOM піни для OV3660
+// ============================================
 #define PWDN_GPIO_NUM     -1
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     15
@@ -24,7 +26,25 @@
 #define HREF_GPIO_NUM     45
 #define PCLK_GPIO_NUM     16
 
+// ============================================
 // Hostname
+// ============================================
 #define WIFI_DEFAULT_HOSTNAME "freenove-cam"
+
+// ============================================
+// WiFi Config Tool — КРИТИЧНО ВАЖЛИВО!
+// ============================================
+// WIFI_MANAGER = відкривати AP (192.168.4.1) для налаштування
+// WIFI_RETRY = тільки перезапускати спроби підключення
+//
+// Без цього Tasmota не відкриє точку доступу при першому старті!
+#undef WIFI_CONFIG_TOOL
+#define WIFI_CONFIG_TOOL WIFI_MANAGER
+
+// ============================================
+// Додаткові налаштування для стабільності
+// ============================================
+// Збільшити таймаут WiFi
+#define WIFI_AP_PASSPHRASE "tasmota123"  // Пароль для AP (опціонально)
 
 #endif
