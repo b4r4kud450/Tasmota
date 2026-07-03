@@ -388,7 +388,7 @@ struct PICSTORE {
 #ifdef ENABLE_RTSPSERVER
 
 //#include <OV2640.h>  // OV3660: removed, using generic esp_camera API
-#include <SimStreamer.h>
+//#include <SimStreamer.h>
 //#include <OV2640Streamer.h>  // OV3660: removed
 #include <CRtspSession.h>
 #ifndef RTSP_FRAME_TIME
