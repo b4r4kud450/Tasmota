@@ -12,19 +12,19 @@
 #define PWDN_GPIO_NUM     -1
 #define RESET_GPIO_NUM    -1
 #define XCLK_GPIO_NUM     15
-#define SIOD_GPIO_NUM     17
-#define SIOC_GPIO_NUM     18
-#define Y9_GPIO_NUM       39
-#define Y8_GPIO_NUM       40
-#define Y7_GPIO_NUM       41
-#define Y6_GPIO_NUM       42
-#define Y5_GPIO_NUM       21
-#define Y4_GPIO_NUM       48
-#define Y3_GPIO_NUM       47
-#define Y2_GPIO_NUM       14
-#define VSYNC_GPIO_NUM    38
-#define HREF_GPIO_NUM     45
-#define PCLK_GPIO_NUM     16
+#define SIOD_GPIO_NUM     4
+#define SIOC_GPIO_NUM     5
+#define Y9_GPIO_NUM       16
+#define Y8_GPIO_NUM       17
+#define Y7_GPIO_NUM       18
+#define Y6_GPIO_NUM       12
+#define Y5_GPIO_NUM       10
+#define Y4_GPIO_NUM       8
+#define Y3_GPIO_NUM       9
+#define Y2_GPIO_NUM       11
+#define VSYNC_GPIO_NUM    6
+#define HREF_GPIO_NUM     7
+#define PCLK_GPIO_NUM     13
 
 // ============================================
 // Hostname
@@ -32,19 +32,17 @@
 #define WIFI_DEFAULT_HOSTNAME "freenove-cam"
 
 // ============================================
-// WiFi Config Tool — КРИТИЧНО ВАЖЛИВО!
+// WiFi Config Tool
 // ============================================
-// WIFI_MANAGER = відкривати AP (192.168.4.1) для налаштування
-// WIFI_RETRY = тільки перезапускати спроби підключення
-//
-// Без цього Tasmota не відкриє точку доступу при першому старті!
 #undef WIFI_CONFIG_TOOL
 #define WIFI_CONFIG_TOOL WIFI_MANAGER
+#define WIFI_AP_PASSPHRASE "tasmota123"
 
 // ============================================
-// Додаткові налаштування для стабільності
+// Вимкнути LVGL/Display для стабільності камери
 // ============================================
-// Збільшити таймаут WiFi
-#define WIFI_AP_PASSPHRASE "tasmota123"  // Пароль для AP (опціонально)
+#undef USE_LVGL
+#undef USE_DISPLAY
+#undef USE_HASPMOTA
 
 #endif
